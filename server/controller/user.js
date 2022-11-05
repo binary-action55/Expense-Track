@@ -10,7 +10,7 @@ module.exports.addUser = async (req,res,next) =>{
       req.body.email==null ||
       req.body.password==null 
     ){
-        res.status(400).json({message:"Bad Input"});
+        return res.status(400).json({message:"Bad Input"});
     }
     
     const name = req.body.name;
@@ -34,3 +34,30 @@ module.exports.addUser = async (req,res,next) =>{
         res.status(500).json({message:err,uniqueEmail:undefined});
     }
 }
+
+module.exports.checkLogin = async (req,res,next) =>{
+    if(req.body.userName==null ||
+       req.body.password==null 
+     ){
+         return res.status(400).json({message:"Bad Input"});
+     }
+     const userName = req.body.userName;
+     const password = req.body.password;
+ 
+     try{
+         const items = await User.findAll({
+             where:{
+                 email:userName,
+             }
+         })
+         console.log("items",items);
+         if(items.length==0)
+             return res.status(400).json({message:'Username is not Registered'});
+         if(items[0].password!==password)
+             return res.status(400).json({message:'Invalid Password'});
+         res.status(201).json({success:true,message:'Login Valid'});
+     }
+     catch(err){
+         res.status(500).json({message:err});
+     }
+ }
