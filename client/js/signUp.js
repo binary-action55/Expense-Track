@@ -1,7 +1,7 @@
 const signUpForm = document.querySelector('#signUpForm');
 const nameInput = document.querySelector('#nameInput');
 const emailInput = document.querySelector('#emailInput');
-const phoneInput = document.querySelector('#phoneInput');
+const passwordInput = document.querySelector('#passwordInput');
 
 
 signUpForm.addEventListener('submit', async (e)=>{
@@ -9,12 +9,12 @@ signUpForm.addEventListener('submit', async (e)=>{
     
     const name = nameInput.value;
     const email = emailInput.value;
-    const phone = phoneInput.value;
+    const password = passwordInput.value;
 
     const userDetails = {
         name,
         email,
-        phone,
+        password,
     };
 
     try{
