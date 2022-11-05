@@ -1,0 +1,17 @@
+#expenseForm {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.mainContent {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+#expenseFormSubmit {
+    margin-top: 2rem;
+}

@@ -35,8 +35,7 @@ signUpForm.addEventListener('submit', async (e)=>{
 
     try{
         const res = await axios.post('http://localhost:3000/user/signUp',userDetails)
-        emailInput.classList.remove('error');
-        signUpForm.reset();
+        window.location.href='./login.html';
     }
     catch(err){
         if(err.response.data.uniqueEmail===false){

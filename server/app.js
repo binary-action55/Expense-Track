@@ -7,6 +7,7 @@ const sequelize = require(path.join(rootDirectory,'utils','database'));
 
 const userRoutes = require(path.join(rootDirectory,'routes','user'));
 const errorRoutes = require(path.join(rootDirectory,'routes','error'));
+const expenseRoutes = require(path.join(rootDirectory,'routes','expense'));
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(cors());
 app.use(bodyParser.json({extended:false}));
 
 app.use('/user',userRoutes);
+app.use('/expense',expenseRoutes);
 app.use('/',errorRoutes);
 
 sequelize
