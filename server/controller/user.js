@@ -2,6 +2,9 @@ const path = require('path');
 const rootDirectory = require('../utils/rootDirectory');
 const User = require(path.join(rootDirectory,'model','user'));
 
+
+const SEQUELIZE_UNIQUE_ERROR = 'SequelizeUniqueConstraintError';
+
 module.exports.addUser = async (req,res,next) =>{
    if(req.body.name==null ||
       req.body.email==null ||
@@ -20,12 +23,14 @@ module.exports.addUser = async (req,res,next) =>{
             email,
             password,
         })
-        res.status(201).json({success:true,message:'User Created'});
+        res.status(201).json({success:true,message:'User Created',uniqueEmail:true});
     }
     catch(err){
-        console.log(err);
-        const error = err.get('email');
-        console.log(error);
-        res.status(400).json({message:err});
+        if(err.name===SEQUELIZE_UNIQUE_ERROR)
+        {
+            if(err.fields.hasOwnProperty('email'))
+                return res.status(400).json({message:'Email is already Registered',uniqueEmail:false});
+        }
+        res.status(500).json({message:err,uniqueEmail:undefined});
     }
 }

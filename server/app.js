@@ -18,7 +18,7 @@ app.use('/user',userRoutes);
 app.use('/',errorRoutes);
 
 sequelize
-.sync({force:true})
+.sync()
 .then(()=>{
     app.listen(3000);
 })

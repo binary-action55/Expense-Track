@@ -1,0 +1,20 @@
+#formErrorToastContainer {
+    display: hidden;
+}
+
+#emailInput.error {
+    border: 2px red solid;
+}
+
+.error-toast {
+    color: darkred;
+    font-size: 2rem;
+    background-color: rgb(234, 234, 48);
+}
+
+.sign-up-form {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+}
