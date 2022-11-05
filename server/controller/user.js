@@ -31,7 +31,7 @@ module.exports.addUser = async (req,res,next) =>{
             if(err.fields.hasOwnProperty('email'))
                 return res.status(400).json({message:'Email is already Registered',uniqueEmail:false});
         }
-        res.status(500).json({message:err,uniqueEmail:undefined});
+        res.status(500).json({message:err});
     }
 }
 
@@ -50,12 +50,11 @@ module.exports.checkLogin = async (req,res,next) =>{
                  email:userName,
              }
          })
-         console.log("items",items);
          if(items.length==0)
-             return res.status(400).json({message:'Username is not Registered'});
+             return res.status(404).json({message:'User not found',userNameValid:false});
          if(items[0].password!==password)
-             return res.status(400).json({message:'Invalid Password'});
-         res.status(201).json({success:true,message:'Login Valid'});
+             return res.status(400).json({message:'User not Authorized',userNameValid:true,passwordValid:false});
+         res.status(201).json({success:true,message:'User Login Successful',userNameValid:true,passwordValid:true});
      }
      catch(err){
          res.status(500).json({message:err});

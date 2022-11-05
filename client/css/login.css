@@ -2,7 +2,11 @@
     display: hidden;
 }
 
-#emailInput.error {
+#passwordInput.error {
+    border: 2px red solid;
+}
+
+#userNameInput.error {
     border: 2px red solid;
 }
 
@@ -12,13 +16,13 @@
     background-color: rgb(234, 234, 48);
 }
 
-.sign-up-form {
+.login-form {
     display: flex;
     flex-flow: column wrap;
     justify-content: center;
     align-items: center;
 }
 
-#loginButton {
+#signUpButton {
     margin-top: 2rem;
 }

@@ -2,7 +2,8 @@ const signUpForm = document.querySelector('#signUpForm');
 const nameInput = document.querySelector('#nameInput');
 const emailInput = document.querySelector('#emailInput');
 const passwordInput = document.querySelector('#passwordInput');
-const formToastContainer = document.querySelector('#formErrorToastContainer'); 
+const formToastContainer = document.querySelector('#formErrorToastContainer');
+const loginButton = document.querySelector('#loginButton');
 
 function createFormErrorToast(message){
     const toast = document.createElement('div');
@@ -14,6 +15,10 @@ function createFormErrorToast(message){
         formToastContainer.removeChild(toast);
     },3000);
 }
+
+loginButton.addEventListener('click',()=> {
+    window.location.href='./login.html';
+})
 
 signUpForm.addEventListener('submit', async (e)=>{
     e.preventDefault();
