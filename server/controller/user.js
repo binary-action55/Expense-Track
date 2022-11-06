@@ -2,6 +2,7 @@ const path = require('path');
 const rootDirectory = require('../utils/rootDirectory');
 const User = require(path.join(rootDirectory,'model','user'));
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const SEQUELIZE_UNIQUE_ERROR = 'SequelizeUniqueConstraintError';
 
@@ -46,20 +47,24 @@ module.exports.checkLogin = async (req,res,next) =>{
      const userName = req.body.userName;
      const password = req.body.password;
  
-     try{
-         const items = await User.findAll({
-             where:{
+    try{
+        const items = await User.findAll({
+            where:{
                  email:userName,
-             }
-         })
-         if(items.length===0)
-             return res.status(404).json({message:'User not found',userNameValid:false});
-         const result = await bcrypt.compare(password,items[0].password);
-         if(!result)
+            }
+        })
+        if(items.length===0)
+            return res.status(404).json({message:'User not found',userNameValid:false});
+        
+        const result = await bcrypt.compare(password,items[0].password);
+        if(!result)
             return res.status(400).json({message:'User not Authorized',userNameValid:true,passwordValid:false});
-         res.status(200).json({success:true,message:'User Login Successful',userNameValid:true,passwordValid:true});
-     }
+        
+        const token = jwt.sign({id:items[0].id,name:items[0].name},process.env.JWT_KEY);
+        
+        res.status(200).json({success:true,message:'User Login Successful',userNameValid:true,passwordValid:true,token});
+    }
      catch(err){
          res.status(500).json({message:err});
-     }
+    }
  }

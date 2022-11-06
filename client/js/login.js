@@ -35,6 +35,7 @@ loginForm.addEventListener('submit', async (e)=>{
         const res = await axios.post('http://localhost:3000/user/login',userLoginDetails);
         passwordInput.classList.remove('error');
         userNameInput.classList.remove('error');
+        localStorage.setItem('userToken',res.data.token);
         window.location.href='./expense.html';
     }
     catch(err){

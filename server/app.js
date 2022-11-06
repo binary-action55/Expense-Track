@@ -5,6 +5,11 @@ const cors = require('cors');
 const rootDirectory = require('./utils/rootDirectory');
 const sequelize = require(path.join(rootDirectory,'utils','database'));
 
+const User = require(path.join(rootDirectory,'model','user'));
+const Expense = require(path.join(rootDirectory,'model','expense'));
+
+const userAuthorization = require(path.join(rootDirectory,'middleware','authorize'));
+
 const userRoutes = require(path.join(rootDirectory,'routes','user'));
 const errorRoutes = require(path.join(rootDirectory,'routes','error'));
 const expenseRoutes = require(path.join(rootDirectory,'routes','expense'));
@@ -16,8 +21,11 @@ app.use(cors());
 app.use(bodyParser.json({extended:false}));
 
 app.use('/user',userRoutes);
-app.use('/expense',expenseRoutes);
+app.use('/expense',userAuthorization.authorize,expenseRoutes);
 app.use('/',errorRoutes);
+
+User.hasMany(Expense);
+Expense.belongsTo(User,{contraints:true,onDelete:'CASCADE'});
 
 sequelize
 .sync()

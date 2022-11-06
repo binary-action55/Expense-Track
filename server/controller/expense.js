@@ -1,6 +1,6 @@
+const exp = require('constants');
 const path = require('path');
 const rootDirectory = require('../utils/rootDirectory');
-const Expense = require(path.join(rootDirectory,'model','expense'));
 
 module.exports.addExpense = async (req,res,next)=>{
     const {description,amount,category} = req.body;
@@ -8,7 +8,7 @@ module.exports.addExpense = async (req,res,next)=>{
         return res.status(400).json({message:'Bad Input'});
     
     try{
-        const expense = await Expense.create({
+        const expense = await req.user.createExpense({
             description,
             amount,
             category,
@@ -23,7 +23,7 @@ module.exports.addExpense = async (req,res,next)=>{
 
 module.exports.getExpenses = async(req,res,next)=>{
     try{
-        const expenses = await Expense.findAll({order:[['createdAt','ASC']]});
+        const expenses = await req.user.getExpenses({order:[['createdAt','ASC']]});
         res.status(200).json({success:true,expenses});
     }
     catch(err){
@@ -37,12 +37,11 @@ module.exports.deleteExpense = async(req,res,next)=>{
     if(id==null)
         return res.status(400).json({message:'Bad Input'});
     try{
-        const deleteStatus = await Expense.destroy({where:{id}});
-        console.log
-        if(deleteStatus===1)
-            res.status(201).json({success:true});
-        else
-            res.status(400).json({message:'id not found'});
+        const expense = await req.user.getExpenses({where:{id}});
+        if(expense.length===0)
+            return res.status(400).json({message:'id not found'});
+        await expense[0].destroy();
+        res.status(201).json({success:true});
     }
     catch(err){
         console.error(err);

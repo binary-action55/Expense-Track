@@ -27,7 +27,8 @@ function createExpenseItem(expenseDetails)
 
 async function createExpenseItemList(){
     try{
-        const res = await axios.get('http://localhost:3000/expense');
+        const token = localStorage.getItem('userToken');
+        const res = await axios.get('http://localhost:3000/expense',{headers:{'Authorization':token}});
         const expenses = res.data.expenses;
         for(let expense of expenses)
         {
@@ -43,8 +44,9 @@ async function createExpenseItemList(){
 async function deleteExpenseListItem(obj){
     const parent = obj.parentElement;
     const id = parent.dataset.id;
+    const token = localStorage.getItem('userToken');
     try{
-        await axios.delete(`http://localhost:3000/expense/${id}`)
+        await axios.delete(`http://localhost:3000/expense/${id}`,{headers:{'Authorization':token}})
         expenseList.removeChild(parent);
     }
     catch(err){
@@ -59,11 +61,12 @@ document.addEventListener('DOMContentLoaded',()=>{
 expenseForm.addEventListener('submit',async (e)=>{
     e.preventDefault();
     try{
+        const token = localStorage.getItem('userToken');
         const res = await axios.post('http://localhost:3000/expense',{
             description:expenseDescriptionInput.value,
             amount:expenseAmountInput.value,
             category:expenseCategoryInput.value,     
-        });
+        },{headers:{'Authorization':token}});
         createExpenseItem(res.data.expense);
         expenseForm.reset();
     }
