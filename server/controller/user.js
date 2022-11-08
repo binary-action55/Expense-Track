@@ -69,3 +69,16 @@ module.exports.checkLogin = async (req,res,next) =>{
          res.status(500).json({message:err});
     }
  }
+
+ module.exports.forgotPassword = async (req,res,next)=>{
+    if(req.body.email==null){
+        return res.status(400).json({message:'email is missing or undefined'});
+    }
+    const email = req.body.email;
+
+    const user = await User.findAll({where:{email}});
+    if(user.length>0){
+        return res.status(400).json({message:'Email is not registered',isRegisteredEmail:false});
+    }
+    res.status(200).json({message:'Email has been sent',isRegisteredEmail:true});
+ }

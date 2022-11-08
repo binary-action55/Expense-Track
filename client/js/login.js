@@ -3,6 +3,7 @@ const userNameInput = document.querySelector('#userNameInput');
 const passwordInput = document.querySelector('#passwordInput');
 const formToastContainer = document.querySelector('#formErrorToastContainer');
 const signUpButton = document.querySelector('#signUpButton');
+const forgotPasswordButton = document.querySelector('#forgotPasswordButton');
 
 function createFormErrorToast(message){
     passwordInput.classList.remove('error');
@@ -15,6 +16,10 @@ function createFormErrorToast(message){
         formToastContainer.removeChild(toast);
     },3000);
 }
+
+forgotPasswordButton.addEventListener('click',(e)=>{
+    window.location.href = './forgotPassword.html';
+})
 
 signUpButton.addEventListener('click',(e)=>{
     window.location.href = './signUp.html';
