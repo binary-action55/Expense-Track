@@ -60,9 +60,10 @@ module.exports.checkLogin = async (req,res,next) =>{
         if(!result)
             return res.status(400).json({message:'User not Authorized',userNameValid:true,passwordValid:false});
         
-        const token = jwt.sign({id:items[0].id,name:items[0].name},process.env.JWT_KEY);
+        const token = jwt.sign({id:items[0].id,name:items[0].name},process.env.JWT_KEY,);
         
-        res.status(200).json({success:true,message:'User Login Successful',userNameValid:true,passwordValid:true,token});
+        res.status(200).json({success:true,message:'User Login Successful',userNameValid:true,passwordValid:true,token,
+        isPremium:items[0].isPremium});
     }
      catch(err){
          res.status(500).json({message:err});

@@ -13,6 +13,7 @@ const userAuthorization = require(path.join(rootDirectory,'middleware','authoriz
 const userRoutes = require(path.join(rootDirectory,'routes','user'));
 const errorRoutes = require(path.join(rootDirectory,'routes','error'));
 const expenseRoutes = require(path.join(rootDirectory,'routes','expense'));
+const paymentRoutes = require(path.join(rootDirectory,'routes','payment'));
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(bodyParser.json({extended:false}));
 
 app.use('/user',userRoutes);
 app.use('/expense',userAuthorization.authorize,expenseRoutes);
+app.use('/payment',userAuthorization.authorize,paymentRoutes);
 app.use('/',errorRoutes);
 
 User.hasMany(Expense);

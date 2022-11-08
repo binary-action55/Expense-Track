@@ -3,6 +3,7 @@ const expenseDescriptionInput = document.querySelector('#expenseDescriptionInput
 const expenseAmountInput = document.querySelector('#expenseAmountInput');
 const expenseCategoryInput = document.querySelector('#expenseCategoryInput');
 const expenseList = document.querySelector('#expenseList');
+const featureContainer = document.querySelector('#featureContainer');
 
 function createExpenseItem(expenseDetails)
 {
@@ -54,7 +55,33 @@ async function deleteExpenseListItem(obj){
     }
 }
 
+async function getPremiumService(){
+    window.location.href='./payment.html';
+}
+
+async function toggleTheme(){
+    const body = document.querySelector('body');
+    body.classList.toggle('dark');
+}
+
+function createFeatureSection(){
+    const isPremium = localStorage.getItem('isPremium');
+    console.log(typeof isPremium);
+    if(isPremium==null || isPremium==='false'){
+        const getPremiumButton = document.createElement('button');
+        getPremiumButton.setAttribute('onclick','getPremiumService()');
+        getPremiumButton.innerText='Get Premium';
+        featureContainer.appendChild(getPremiumButton);
+        return;
+    }
+    const themeButton = document.createElement('button');
+    themeButton.setAttribute('onclick','toggleTheme()');
+    themeButton.innerText = 'Toggle Theme';
+    featureContainer.appendChild(themeButton);
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
+    createFeatureSection();
     createExpenseItemList();
 })
 

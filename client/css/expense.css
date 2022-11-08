@@ -15,3 +15,14 @@
 #expenseFormSubmit {
     margin-top: 2rem;
 }
+
+body.dark {
+    background-color: black;
+    color: white;
+}
+
+.featureContainer {
+    position: absolute;
+    right: 0;
+    top: 0;
+}

@@ -1,4 +1,3 @@
-const exp = require('constants');
 const path = require('path');
 const rootDirectory = require('../utils/rootDirectory');
 

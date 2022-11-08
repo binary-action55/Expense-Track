@@ -36,6 +36,7 @@ loginForm.addEventListener('submit', async (e)=>{
         passwordInput.classList.remove('error');
         userNameInput.classList.remove('error');
         localStorage.setItem('userToken',res.data.token);
+        localStorage.setItem('isPremium',res.data.isPremium);
         window.location.href='./expense.html';
     }
     catch(err){
