@@ -23,6 +23,29 @@ body.dark {
 
 .featureContainer {
     position: absolute;
-    right: 0;
+    left: 0;
     top: 0;
+}
+
+.dropDownContent {
+    display: none;
+    position: absolute;
+    z-index: 1;
+}
+
+.dropDownContent a {
+    text-decoration: none;
+    padding: 12px 16px;
+    display: block;
+    background-color: #f1f1f1;
+    color: black;
+}
+
+.featureContainer:hover .dropDownContent {
+    display: block;
+}
+
+.dropDownContent a:hover {
+    background-color: #d1d1d1;
+    cursor: pointer;
 }

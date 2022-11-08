@@ -66,7 +66,6 @@ async function toggleTheme(){
 
 function createFeatureSection(){
     const isPremium = localStorage.getItem('isPremium');
-    console.log(typeof isPremium);
     if(isPremium==null || isPremium==='false'){
         const getPremiumButton = document.createElement('button');
         getPremiumButton.setAttribute('onclick','getPremiumService()');
@@ -74,10 +73,12 @@ function createFeatureSection(){
         featureContainer.appendChild(getPremiumButton);
         return;
     }
-    const themeButton = document.createElement('button');
-    themeButton.setAttribute('onclick','toggleTheme()');
-    themeButton.innerText = 'Toggle Theme';
-    featureContainer.appendChild(themeButton);
+    featureContainer.innerHTML=`
+    <button class="dropDownButton"><i class="fa fa-bars"></i></button>
+    <div class="dropDownContent">
+    <a onclick=toggleTheme()>Toggle Theme</a>
+    <a href='./expenseLeaderBoard.html'>Leader Board</a>
+    `;
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
