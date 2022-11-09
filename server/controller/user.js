@@ -77,8 +77,40 @@ module.exports.checkLogin = async (req,res,next) =>{
     const email = req.body.email;
 
     const user = await User.findAll({where:{email}});
-    if(user.length>0){
+    if(user.length===0){
         return res.status(400).json({message:'Email is not registered',isRegisteredEmail:false});
     }
-    res.status(200).json({message:'Email has been sent',isRegisteredEmail:true});
+    const secret = process.env.JWT_KEY + user[0].password;
+    const token = jwt.sign({email:user[0].email},secret,{expiresIn:'15m'});
+    const link = `http://localhost:5500/client/resetPassword.html?email=${user[0].email}&token=${token}`;
+    res.status(200).json({message:'Email has been sent',isRegisteredEmail:true,resetPasswordLink:link});
+ }
+
+ module.exports.resetPassword = async (req,res,next)=>{
+    if(req.body.email==null){
+        return res.status(400).json({message:'email is missing or undefined'});
+    }
+    const email = req.body.email;
+
+    const user = await User.findAll({where:{email}});
+    if(user.length===0){
+        return res.status(400).json({message:'Email is not registered',isRegisteredEmail:false});
+    }
+
+    const token = req.body.token;
+    const password = req.body.password;
+    const secret = process.env.JWT_KEY + user[0].password;
+
+    try{
+        const userDetails = jwt.verify(token,secret);
+        const newPassword = await  bcrypt.hash(password,10);
+        await User.update({password:newPassword},{
+            where:{email:userDetails.email}
+        });
+        res.status(201).json({message:'password updated'});
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({message:err});
+    } 
  }

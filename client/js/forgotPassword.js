@@ -32,6 +32,7 @@ forgotPasswordForm.addEventListener('submit',async (e)=>{
         const res = await axios.post('http://localhost:3000/user/forgotPassword',{email});
         emailInput.classList.remove('error');
         console.log(res.data);
+        window.location.href = res.data.resetPasswordLink;
     }
     catch(err){
         if(err.response.data.isRegisteredEmail===false){
@@ -40,4 +41,4 @@ forgotPasswordForm.addEventListener('submit',async (e)=>{
         }
         console.log(err.response.data.message);
     }
-});
+}); 
