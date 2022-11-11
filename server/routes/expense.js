@@ -8,6 +8,8 @@ const expenseController = require(path.join(rootDirectory,'controller','expense'
 
 router.get('/',expenseController.getExpenses);
 router.get('/leaderBoard',expenseController.getLeaderBoard);
+router.get('/downloadList',expenseController.downloadList);
+router.get('/downloadHistory',expenseController.downloadHistory);
 router.get('/:id',expenseController.getUserExpenses);
 router.post('/',expenseController.addExpense);
 router.delete('/:id',expenseController.deleteExpense);

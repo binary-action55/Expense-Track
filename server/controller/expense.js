@@ -1,7 +1,10 @@
 const path = require('path');
+const AWS = require('aws-sdk');
 const rootDirectory = require('../utils/rootDirectory');
 const Sequelize = require('sequelize');
 const expense = require('../model/expense');
+const { rejects, equal } = require('assert');
+const { resolve } = require('path');
 const User = require(path.join(rootDirectory,'model','user'));
 const Expense = require(path.join(rootDirectory,'model','expense'));
 
@@ -26,8 +29,18 @@ module.exports.addExpense = async (req,res,next)=>{
 
 module.exports.getExpenses = async(req,res,next)=>{
     try{
-        const expenses = await req.user.getExpenses({order:[['createdAt','ASC']]});
-        res.status(200).json({success:true,expenses});
+        const currentPage = +req.query.currentPage;
+        const expensePerPage = +req.query.expensesPerPage || 2;
+        console.log(currentPage);
+        const offset = (currentPage-1)*expensePerPage;
+        const expensesCount = await req.user.countExpenses();
+        const expenses = await req.user.getExpenses({limit:expensePerPage,offset:offset,order:[['createdAt','ASC']]});
+        res.status(200).json({
+            success:true,
+            expenses,
+            hasNextPage:(expensePerPage*currentPage)<expensesCount,
+            hasPreviousPage:currentPage>1,
+        });
     }
     catch(err){
         console.error(err);
@@ -96,4 +109,61 @@ module.exports.getLeaderBoard = async (req,res,next) =>{
         res.status(500).json({message:err});
     }      
 
+}
+
+async function uploadToS3(fileContents,fileName){
+
+    const s3Client = new AWS.S3({
+        accessKeyId:process.env.ACCESS_KEY_ID,
+        secretAccessKeyId:process.env.SECRET_ACCESS_KEY,
+    });
+
+    const params = {
+        Bucket:`demo1221`,
+        Key: fileName,
+        Body:fileContents,
+    
+    };
+    return new Promise((res,rej)=>{
+        s3Client.upload(params,(err,result)=>{
+            if(err){
+                console.log(err);
+                rej("Error");
+            }
+            res(result.Location);
+        }); 
+    });
+}
+
+module.exports.downloadList = async (req,res,next)=>{
+    
+    try{
+        const expenses = await req.user.getExpenses();
+        if(expenses.length===0)
+            throw new Error('No expenses');
+        const fileContents = JSON.stringify(expenses);
+        const fileName = `expenses${req.user.email}-${new Date()}.txt`;
+        const fileUrl = await uploadToS3(fileContents,fileName);
+        await req.user.createExpenseFile({
+            URL:fileUrl,
+        });
+        return res.status(200).json({url:fileUrl,success:true});      
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({message:err});
+    }
+}
+
+module.exports.downloadHistory = async(req,res,next)=>{
+    try{
+        const links = await req.user.getExpenseFiles();
+        if(links.length===0)
+            return res.status(200).json({hasDownloaded:false});
+        res.status(200).json({hasDownloaded:true,links});
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({message:err});
+    }
 }

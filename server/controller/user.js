@@ -107,6 +107,7 @@ module.exports.checkLogin = async (req,res,next) =>{
         await User.update({password:newPassword},{
             where:{email:userDetails.email}
         });
+        
         res.status(201).json({message:'password updated'});
     }
     catch(err){

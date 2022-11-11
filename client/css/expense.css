@@ -49,3 +49,9 @@ body.dark {
     background-color: #d1d1d1;
     cursor: pointer;
 }
+
+#pageNavigationContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

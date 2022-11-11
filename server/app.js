@@ -7,6 +7,7 @@ const sequelize = require(path.join(rootDirectory,'utils','database'));
 
 const User = require(path.join(rootDirectory,'model','user'));
 const Expense = require(path.join(rootDirectory,'model','expense'));
+const ExpenseFile = require(path.join(rootDirectory,'model','expenseFile'))
 
 const userAuthorization = require(path.join(rootDirectory,'middleware','authorize'));
 
@@ -29,6 +30,9 @@ app.use('/',errorRoutes);
 
 User.hasMany(Expense);
 Expense.belongsTo(User,{contraints:true,onDelete:'CASCADE'});
+
+User.hasMany(ExpenseFile);
+ExpenseFile.belongsTo(User,{contraints:true,onDelete:'CASCADE'});
 
 sequelize
 .sync()
