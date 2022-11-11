@@ -6,9 +6,10 @@ module.exports.initiatePayment = async (req,res,next) => {
     
     try{
         const customer = await stripe.customers.create({
-            email:req.body.email,
+            email:'asd@gmail.com',
             name:req.body.name,
         });
+        console.log(req.user);
         req.user.update({isPremium:true});
         res.status(200).json({success:true,message:'Payment Successful'});
     }
