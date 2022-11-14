@@ -26,6 +26,10 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use('/user',userRoutes);
 app.use('/expense',userAuthorization.authorize,expenseRoutes);
 app.use('/payment',userAuthorization.authorize,paymentRoutes);
+app.use('/public',(req,res,next)=>{
+    console.log(`public/${req.url}`);
+    return res.sendFile(path.join(rootDirectory,'public',req.url));
+});
 app.use('/',errorRoutes);
 
 User.hasMany(Expense);

@@ -1,0 +1,57 @@
+#expenseForm {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.mainContent {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+#expenseFormSubmit {
+    margin-top: 2rem;
+}
+
+body.dark {
+    background-color: black;
+    color: white;
+}
+
+.featureContainer {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.dropDownContent {
+    display: none;
+    position: absolute;
+    z-index: 1;
+}
+
+.dropDownContent a {
+    text-decoration: none;
+    padding: 12px 16px;
+    display: block;
+    background-color: #f1f1f1;
+    color: black;
+}
+
+.featureContainer:hover .dropDownContent {
+    display: block;
+}
+
+.dropDownContent a:hover {
+    background-color: #d1d1d1;
+    cursor: pointer;
+}
+
+#pageNavigationContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

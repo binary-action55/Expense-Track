@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/expense.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <main class="mainContent">
+        <form id="expenseForm">
+            <label for="expenseDescription">Description</label>
+            <input type="text" id="expenseDescriptionInput" required>
+            <label for="expenseAmount">Expense Amount</label>
+            <input type="number" id="expenseAmountInput" step=0.01 required>
+            <label for="expenseCategory">Expense Category</label>
+            <select id="expenseCategoryInput" selected="Fuel">
+                <option value="Fuel">Fuel</option>
+                <option value="Groceries">Groceries</option>
+                <option value="Rent">Rent</option>
+            </select>
+            <button type="submit" id="expenseFormSubmit">Submit</button>
+        </form>
+        <section class="featureContainer" id="featureContainer">
+
+        </section>
+        <section class="expensesContainer">
+            <form id="numberPerPageForm">
+                <label for="numberPerPage">No Of Entires Per Page</label>
+                <input type="number" id="numerPerPage" required>
+                <button type="submit" id="numberFormSubmit">Submit</button>
+            </form>
+            <ul class="expenseList" id="expenseList">
+            </ul>
+            <div class="pageNavigationContainer" id="pageNavigationContainer">
+
+            </div>
+            <ul class="downloadList" id="downloadList">
+            </ul>
+        </section>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js"></script>
+    <script src="./js/expense.js"></script>
+</body>
+
+</html>

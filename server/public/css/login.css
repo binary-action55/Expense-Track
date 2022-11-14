@@ -1,0 +1,32 @@
+#formErrorToastContainer {
+    display: hidden;
+}
+
+#passwordInput.error {
+    border: 2px red solid;
+}
+
+#userNameInput.error {
+    border: 2px red solid;
+}
+
+.error-toast {
+    color: darkred;
+    font-size: 2rem;
+    background-color: rgb(234, 234, 48);
+}
+
+.login-form {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+#signUpButton {
+    margin-top: 2rem;
+}
+
+#forgotPasswordButton {
+    margin-top: 2rem;
+}
