@@ -5,6 +5,14 @@
     align-items: center;
 }
 
+.expenseList,
+.downloadList {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 .mainContent {
     display: flex;
     flex-flow: column wrap;
@@ -54,4 +62,20 @@ body.dark {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#expenseHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#logoutButton {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.expenseHeading {
+    text-align: center;
 }

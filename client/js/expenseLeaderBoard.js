@@ -1,4 +1,5 @@
 const expenseLeaderBoardList = document.querySelector('#expenseLeaderBoardList');
+const logoutButton = document.querySelector('#logoutButton');
 
 document.addEventListener('DOMContentLoaded', async ()=>{
     try{
@@ -15,4 +16,9 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     catch(err){
         console.log(err);
     }
+})
+
+logoutButton.addEventListener('click',()=>{
+    localStorage.clear();
+    window.location.href='./login.html';
 })

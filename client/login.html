@@ -5,16 +5,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/login.css">
     <title>Document</title>
 </head>
 
 <body>
     <main class="mainBody">
+        <h1>Login</h1>
         <form class="login-form" id="loginForm">
             <section class="formErrorToastContainer" id="formErrorToastContainer"></section>
             <label for="userNameInput">Email:</label>
-            <input type="text" class="input-text" id="userNameInput" name="userName" required>
+            <input type="email" class="input-text" id="userNameInput" name="userName" required>
             <label for="passwordInput">Password:</label>
             <input type="password" class="input-password" id="passwordInput" name="password" required>
             <button type="submit" class="submit-button">Login</button>

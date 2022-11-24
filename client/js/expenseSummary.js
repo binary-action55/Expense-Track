@@ -1,4 +1,5 @@
 const expenseList = document.querySelector('.expenseList');
+const logoutButton = document.querySelector('#logoutButton');
 
 document.addEventListener('DOMContentLoaded',async ()=>{
     try{
@@ -19,3 +20,8 @@ document.addEventListener('DOMContentLoaded',async ()=>{
         console.error(err);
     }
 });
+
+logoutButton.addEventListener('click',()=>{
+    localStorage.clear();
+    window.location.href='./login.html';
+})

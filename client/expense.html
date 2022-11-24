@@ -5,12 +5,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/expense.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Document</title>
 </head>
 
 <body>
+    <header class="expenseHeader">
+        <h1 class="expenseHeading">Expense Track App</h1>
+        <button class="logoutButton" id="logoutButton">Logout Button</button>
+    </header>
     <main class="mainContent">
         <form id="expenseForm">
             <label for="expenseDescription">Description</label>
@@ -39,6 +44,7 @@
             <div class="pageNavigationContainer" id="pageNavigationContainer">
 
             </div>
+            <h1>Download Report History</h1>
             <ul class="downloadList" id="downloadList">
             </ul>
         </section>

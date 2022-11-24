@@ -4,7 +4,7 @@ const User = require(path.join(rootDirectory,'model','user'));
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const SEQUELIZE_UNIQUE_ERROR = 'SequelizeUniqueConstraintError';
+const UNIQUE_ERROR_CODE = 11000;
 
 module.exports.addUser = async (req,res,next) =>{
    if(req.body.name==null ||
@@ -21,17 +21,15 @@ module.exports.addUser = async (req,res,next) =>{
     try{
         const password = req.body.password;
         const hash = await bcrypt.hash(password,10);
-        await User.create({
-            name,
-            email,
-            password:hash,
-        })
+        const user = new User({name,email,password:hash,membership:'regular'});
+        await user.save();
         res.status(201).json({success:true,message:'User Created',uniqueEmail:true});
     }
     catch(err){
-        if(err.name===SEQUELIZE_UNIQUE_ERROR)
+        console.log(err);
+        if(err.code===UNIQUE_ERROR_CODE)
         {
-            if(err.fields.hasOwnProperty('email'))
+            if(err.keyValue.hasOwnProperty('email'))
                 return res.status(400).json({message:'Email is already Registered',uniqueEmail:false});
         }
         res.status(500).json({message:err});
@@ -48,22 +46,19 @@ module.exports.checkLogin = async (req,res,next) =>{
      const password = req.body.password;
  
     try{
-        const items = await User.findAll({
-            where:{
-                 email:userName,
-            }
-        })
-        if(items.length===0)
+        const user = await User.findOne({email:userName});
+        console.log('user',user);
+        if(!user)
             return res.status(404).json({message:'User not found',userNameValid:false});
         
-        const result = await bcrypt.compare(password,items[0].password);
+        const result = await bcrypt.compare(password,user.password);
         if(!result)
             return res.status(400).json({message:'User not Authorized',userNameValid:true,passwordValid:false});
         
-        const token = jwt.sign({id:items[0].id,name:items[0].name},process.env.JWT_KEY,);
+        const token = jwt.sign({id:user._id.toString(),name:user.name},process.env.JWT_KEY);
         
         res.status(200).json({success:true,message:'User Login Successful',userNameValid:true,passwordValid:true,token,
-        isPremium:items[0].isPremium});
+        isPremium:user.membership==='premium'});
     }
      catch(err){
          res.status(500).json({message:err});
@@ -76,13 +71,13 @@ module.exports.checkLogin = async (req,res,next) =>{
     }
     const email = req.body.email;
 
-    const user = await User.findAll({where:{email}});
-    if(user.length===0){
+    const user = await User.findOne({email:email});
+    if(!user){
         return res.status(400).json({message:'Email is not registered',isRegisteredEmail:false});
     }
-    const secret = process.env.JWT_KEY + user[0].password;
-    const token = jwt.sign({email:user[0].email},secret,{expiresIn:'15m'});
-    const link = `http://localhost:5500/client/resetPassword.html?email=${user[0].email}&token=${token}`;
+    const secret = process.env.JWT_KEY + user.password;
+    const token = jwt.sign({email:user.email},secret,{expiresIn:'15m'});
+    const link = `http://localhost:5500/client/resetPassword.html?email=${user.email}&token=${token}`;
     res.status(200).json({message:'Email has been sent',isRegisteredEmail:true,resetPasswordLink:link});
  }
 
@@ -92,22 +87,20 @@ module.exports.checkLogin = async (req,res,next) =>{
     }
     const email = req.body.email;
 
-    const user = await User.findAll({where:{email}});
-    if(user.length===0){
+    const user = await User.findOne({email:email});
+    if(!user){
         return res.status(400).json({message:'Email is not registered',isRegisteredEmail:false});
     }
 
     const token = req.body.token;
     const password = req.body.password;
-    const secret = process.env.JWT_KEY + user[0].password;
+    const secret = process.env.JWT_KEY + user.password;
 
     try{
         const userDetails = jwt.verify(token,secret);
         const newPassword = await  bcrypt.hash(password,10);
-        await User.update({password:newPassword},{
-            where:{email:userDetails.email}
-        });
-        
+        user.password=newPassword;
+        await user.save();
         res.status(201).json({message:'password updated'});
     }
     catch(err){

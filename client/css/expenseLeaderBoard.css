@@ -1,0 +1,12 @@
+.mainSection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#logoutButton {
+    position: absolute;
+    right: 0;
+    top: 0;
+}

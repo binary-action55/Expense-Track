@@ -1,12 +1,10 @@
 const path = require('path');
 const AWS = require('aws-sdk');
 const rootDirectory = require('../utils/rootDirectory');
-const Sequelize = require('sequelize');
-const expense = require('../model/expense');
-const { rejects, equal } = require('assert');
-const { resolve } = require('path');
+const mongoose = require('mongoose');
 const User = require(path.join(rootDirectory,'model','user'));
 const Expense = require(path.join(rootDirectory,'model','expense'));
+const ExpenseFile = require(path.join(rootDirectory,'model','expenseFile'));
 
 module.exports.addExpense = async (req,res,next)=>{
     const {description,amount,category} = req.body;
@@ -14,11 +12,8 @@ module.exports.addExpense = async (req,res,next)=>{
         return res.status(400).json({message:'Bad Input'});
     
     try{
-        const expense = await req.user.createExpense({
-            description,
-            amount,
-            category,
-        })
+        const expense = new Expense({description,amount,category,userId:req.user});
+        await expense.save();    
         res.status(201).json({success:true,expense});
     }
     catch(err){
@@ -31,10 +26,12 @@ module.exports.getExpenses = async(req,res,next)=>{
     try{
         const currentPage = +req.query.currentPage;
         const expensePerPage = +req.query.expensesPerPage || 2;
+        const userId = req.user._id;
         console.log(currentPage);
         const offset = (currentPage-1)*expensePerPage;
-        const expensesCount = await req.user.countExpenses();
-        const expenses = await req.user.getExpenses({limit:expensePerPage,offset:offset,order:[['createdAt','ASC']]});
+        const expensesCount = await Expense.find({userId}).count();
+        const expenses = await Expense.find({userId}).skip(offset).limit(expensePerPage);
+        //const expenses = await req.user.getExpenses({limit:expensePerPage,offset:offset,order:[['createdAt','ASC']]});
         res.status(200).json({
             success:true,
             expenses,
@@ -49,9 +46,9 @@ module.exports.getExpenses = async(req,res,next)=>{
 }
 
 module.exports.getUserExpenses = async(req,res,next)=>{
-    const id = +req.params.id || 1;
+    const userId = req.params.id || null;
     try{
-        const expenses = await Expense.findAll({where:{userId:id},order:[['createdAt','ASC']]});
+        const expenses = await Expense.find({userId});
         res.status(200).json({success:true,expenses});
     }
     catch(err){
@@ -66,10 +63,10 @@ module.exports.deleteExpense = async(req,res,next)=>{
     if(id==null)
         return res.status(400).json({message:'Bad Input'});
     try{
-        const expense = await req.user.getExpenses({where:{id}});
-        if(expense.length===0)
+        const expense = await Expense.findByIdAndRemove(id);
+        //const expense = await req.user.getExpenses({where:{id}});
+        if(!expense)
             return res.status(400).json({message:'id not found'});
-        await expense[0].destroy();
         res.status(201).json({success:true});
     }
     catch(err){
@@ -80,18 +77,25 @@ module.exports.deleteExpense = async(req,res,next)=>{
 
 module.exports.getLeaderBoard = async (req,res,next) =>{
     try{
-    const users = await User.findAll();
+    const users = await User.find();
     const userExpenseLeaderBoard = [];
     for(let user of users){
-        const expenseSum = await user.getExpenses({
-            attributes:[
-                [Sequelize.fn('SUM',Sequelize.col('amount')),'totalExpense']
-            ]
-        });
+        const expenseSums = await Expense.aggregate([
+            {$match:{
+                userId:user._id,
+            }},
+            {$group:{
+                _id:'',
+                sum:{
+                    $sum:'$amount',
+                }
+            }}
+        ]);
+        const total = expenseSums.length>0 ? expenseSums[0].sum : 0;
         const userDetail = {
-            id:user.id,
+            id:user._id,
             name: user.name,
-            total: +expenseSum[0].dataValues.totalExpense,    
+            total,
         }
         userExpenseLeaderBoard.push(userDetail);
     }
@@ -119,7 +123,7 @@ async function uploadToS3(fileContents,fileName){
     });
 
     const params = {
-        Bucket:`demo1221`,
+        Bucket:`demo1211`,
         Key: fileName,
         Body:fileContents,
     
@@ -138,15 +142,14 @@ async function uploadToS3(fileContents,fileName){
 module.exports.downloadList = async (req,res,next)=>{
     
     try{
-        const expenses = await req.user.getExpenses();
+        const expenses = await Expense.find({userId:req.user._id});
         if(expenses.length===0)
             throw new Error('No expenses');
         const fileContents = JSON.stringify(expenses);
         const fileName = `expenses${req.user.email}-${new Date()}.txt`;
         const fileUrl = await uploadToS3(fileContents,fileName);
-        await req.user.createExpenseFile({
-            URL:fileUrl,
-        });
+        const expenseFile = new ExpenseFile({URL:fileUrl,userId:req.user._id});
+        await expenseFile.save();
         return res.status(200).json({url:fileUrl,success:true});      
     }
     catch(err){
@@ -157,7 +160,7 @@ module.exports.downloadList = async (req,res,next)=>{
 
 module.exports.downloadHistory = async(req,res,next)=>{
     try{
-        const links = await req.user.getExpenseFiles();
+        const links = await ExpenseFile.find({userId:req.user._id});
         if(links.length===0)
             return res.status(200).json({hasDownloaded:false});
         res.status(200).json({hasDownloaded:true,links});

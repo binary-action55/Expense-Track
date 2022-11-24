@@ -9,14 +9,15 @@ const pageNavigationContainer = document.querySelector('#pageNavigationContainer
 const numberFormSubmit = document.querySelector('#numberFormSubmit');
 const numberPerPageForm = document.querySelector('#numberPerPageForm');
 const numerPerPage = document.querySelector('#numerPerPage');
+const logoutButton = document.querySelector('#logoutButton');
 
 function createExpenseItem(expenseDetails)
 {
-    const {id,description,amount,category} = expenseDetails;    
+    const {_id,description,amount,category} = expenseDetails;    
     const expenseListItem = document.createElement('li');
     
     expenseListItem.classList.add('expenseListItem');
-    expenseListItem.dataset.id=id;
+    expenseListItem.dataset.id=_id.toString();
     expenseListItem.dataset.description=description;
     expenseListItem.dataset.amount=amount;
     expenseListItem.dataset.category=category;
@@ -106,7 +107,7 @@ async function createExpenseItemList(currentPage){
         const expenses = res.data.expenses;
         if(isPremium!=null && isPremium!==false && expenses.length>0){
             const download = document.createElement('button');
-            download.innerText = 'download';
+            download.innerText = 'Download Expense Report';
             download.setAttribute('onclick','getDownloadList()');
             expenseList.appendChild(download);
         }
@@ -191,3 +192,8 @@ expenseForm.addEventListener('submit',async (e)=>{
         console.log(err);
     }
 });
+
+logoutButton.addEventListener('click',()=>{
+    localStorage.clear();
+    window.location.href='./login.html';
+})
