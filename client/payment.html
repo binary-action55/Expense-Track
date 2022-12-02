@@ -6,15 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/payment.css">
     <title>Document</title>
 </head>
 
 <body>
     <h1>Payment Form </h1>
     <form class="paymentForm" id="paymentForm">
-        <input type="text" id="nameInput" name="name">
-        <input type="text" id="emailInput" name="email">
+        <span id="premiumAmount"><h3>Amount: Rs.50</h3></span>
+        <label for="cardNumberInput">Card Number</label>
         <input type="text" id="cardNumberInput" name="cardNumber" placeholder="1111-1111-1111-1111">
+        <label for="CVVInput">CVV</label>
         <input type="text" id="CVVInput" name="CVV" placeholder="123">
         <button type="submit">Submit</button>
     </form>

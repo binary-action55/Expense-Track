@@ -27,7 +27,6 @@ module.exports.getExpenses = async(req,res,next)=>{
         const currentPage = +req.query.currentPage;
         const expensePerPage = +req.query.expensesPerPage || 2;
         const userId = req.user._id;
-        console.log(currentPage);
         const offset = (currentPage-1)*expensePerPage;
         const expensesCount = await Expense.find({userId}).count();
         const expenses = await Expense.find({userId}).skip(offset).limit(expensePerPage);

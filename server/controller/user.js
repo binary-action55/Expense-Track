@@ -47,7 +47,6 @@ module.exports.checkLogin = async (req,res,next) =>{
  
     try{
         const user = await User.findOne({email:userName});
-        console.log('user',user);
         if(!user)
             return res.status(404).json({message:'User not found',userNameValid:false});
         
